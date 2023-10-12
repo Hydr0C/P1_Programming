@@ -11,11 +11,14 @@ public class PLayer : MonoBehaviour
         attackDmg,
         expPoints;
 
+    
 
     // Start is called before the first frame update
     void Start()
     {
-        
+        level = 1;
+        expPoints = 0;
+
     }
 
     // Update is called once per frame
