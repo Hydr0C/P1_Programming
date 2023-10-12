@@ -42,7 +42,7 @@ public class Enemy : MonoBehaviour
             activeEnemy = false;
             Debug.Log("Enemy ded");
         }
-        else
+        else if (enemyTurn)
         {
             //
         }
