@@ -5,6 +5,8 @@ using UnityEngine;
 
 public class Enemy : MonoBehaviour
 {
+    public PLayer playerScript;
+
     // Define the variables needed
     public int enemyHealth,
         attackDMG,
@@ -14,7 +16,7 @@ public class Enemy : MonoBehaviour
     bool activeEnemy;
     public bool enemyTurn;
 
-    public TMP_Text enemyText; 
+    public TMP_Text enemyStats, enemyText, whomstTurn; 
 
     void Start()
     {
@@ -33,7 +35,7 @@ public class Enemy : MonoBehaviour
         }
         
         //Displays the enemy's stats
-        enemyText.SetText("HP: " + enemyHealth + ", Level: " + level + ", Damage: " + attackDMG);
+        enemyStats.SetText("HP: " + enemyHealth + ", Level: " + level + ", Damage: " + attackDMG);
         
         // Checks if the alive enemy is actually alive
         if(enemyHealth < 1)
@@ -44,7 +46,12 @@ public class Enemy : MonoBehaviour
         }
         else if (enemyTurn)
         {
-            //
+            whomstTurn.SetText("Turn: Enemy");
+            enemyText.SetText("The enemy attacks!!! take " + attackDMG + " damage!");
+            
+            playerScript.playerHealth -= attackDMG;
+            enemyTurn = false;
+            whomstTurn.SetText("Turn: Player");
         }
     }
 
@@ -54,11 +61,19 @@ public class Enemy : MonoBehaviour
         level = Random.Range(1, 6);
         Debug.Log("Level = " + level);
 
+        //WIll hopefully make sure enemies are a maximum of 1 level higher than the player and hopefully will not crash everything (saving before i test lol) IT DIDNT LETS GO
+        if(level > playerScript.level + 1)
+        {
+            SpawnEnemy();
+        }
+
         // These are then set based on the new level
         enemyHealth = 10 * level;
-        attackDMG = 5 + (level * 2);
+        attackDMG = 5 + level;
         xpValue = 5 * level;
 
         activeEnemy = true;
+        enemyText.SetText("A wild enemy appears!");
+        whomstTurn.SetText("Turn: Player");
     }
 }
