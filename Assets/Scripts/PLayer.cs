@@ -10,9 +10,9 @@ public class PLayer : MonoBehaviour
 
     public Enemy enemyScript;
 
-    public TMP_Text playerText, attackButtText, healButtText;
-    public Button attackButt, healButt;
-    public GameObject endGamePanel;
+    public TMP_Text playerText, attackButtText, healButtText, endText;
+    public Button attackButt, healButt, lvlUp;
+    public GameObject endGamePanel, inGamePanel;
 
     private int playerMaxHealth,
         healthPotions, 
@@ -22,7 +22,7 @@ public class PLayer : MonoBehaviour
         playerHealth;
     
     private float expPoints,
-        attackDmg,
+        attackDmg, //THE ATTACK STUFF IS AN INT BUT NOT HERE, LOOK IN THE ATTACK FUNCTION I JUST NEEDED IT TO CALCULATE NICELY
         lvlUpThreshhold;
 
     // Start is called before the first frame update
@@ -52,12 +52,11 @@ public class PLayer : MonoBehaviour
         // Checks if the player can level up
         if (expPoints >= lvlUpThreshhold)
         {
-            // Levels up the player, increases the level up threshhold, resets xp, increases attack damage and checks if the level up worked.
-            level++;
-            lvlUpThreshhold = 20 + (level * 10);
-            expPoints = 0f;
-            attackDmg = 5 * (level * 1.25f);
-            Debug.Log("base dmg: " + attackDmg);
+            lvlUp.interactable = true;
+        }
+        else
+        {
+            lvlUp.interactable = false;
         }
         // if we still goin (no one dead or won)
         if (level < 5 && playerHealth > 0)
@@ -92,8 +91,8 @@ public class PLayer : MonoBehaviour
     public void Attack()
     {
         // This subtracts the damage from the health
-        int attInt = (int)Mathf.Round(attackDmg);
-        Debug.Log("damage: " + attInt);
+        int attInt = (int)Mathf.Round(attackDmg); //SEE IT'S AN INT
+        //Debug.Log("damage: " + attInt);
 
         enemyScript.enemyHealth -= attInt;
         
@@ -101,6 +100,7 @@ public class PLayer : MonoBehaviour
         if (enemyScript.enemyHealth < 0)
         {
             expPoints += enemyScript.xpValue;
+            Debug.Log("EXP: " + expPoints);
         }
         
         // Ends the player's turn
@@ -114,7 +114,7 @@ public class PLayer : MonoBehaviour
         // Needed so the player doesn't get infinite health
         if(healthPotions > 0)
         {
-            Debug.Log("potion count: " + healthPotions);
+            //Debug.Log("potion count: " + healthPotions);
             // This will ensure the player does not go over their maximum health
             playerHealth += 15 * level;
             if (playerHealth > playerMaxHealth)
@@ -123,7 +123,7 @@ public class PLayer : MonoBehaviour
             }
             // Remove 1 potion
             healthPotions--;
-            Debug.Log("potion count: " + healthPotions);
+            //Debug.Log("potion count: " + healthPotions);
 
             // Updates potion count
             healButtText.SetText("Heal (" + healthPotions + " left)");
@@ -137,7 +137,17 @@ public class PLayer : MonoBehaviour
 
         // Ends the player's turn
         enemyScript.enemyTurn = true;
-        Debug.Log("healed " + testingVar);
+        //Debug.Log("healed " + testingVar);
+    }
+
+    public void LevelUp()
+    {
+        // Levels up the player, increases the level up threshhold, resets xp, increases attack damage and checks if the level up worked.
+        level++;
+        lvlUpThreshhold = 20 + (level * 10);
+        expPoints = 0f;
+        attackDmg = 5 * (level * 1.25f);
+        Debug.Log("Levelled up, base dmg: " + attackDmg);
     }
 
     public void EndGame()
@@ -145,12 +155,12 @@ public class PLayer : MonoBehaviour
         if(level >= 5)
         {
             //Game won
-            enemyScript.enemyText.SetText("Ayy good job :)) you win ");
+            endText.SetText("Ayy good job :)) you win ");
         }
         else if(playerHealth <= 0)
         {
             // Game Lost
-            enemyScript.enemyText.SetText("L you died");
+            endText.SetText("L you died");
         }
         attackButt.gameObject.SetActive(false); 
         healButt.gameObject.SetActive(false);

@@ -74,6 +74,7 @@ public class Enemy : MonoBehaviour
 
         activeEnemy = true;
         enemyText.SetText("A wild enemy appears!");
+        Debug.Log("A wild enemy appears!");
         whomstTurn.SetText("Turn: Player");
     }
 }
